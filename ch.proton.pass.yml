@@ -1,0 +1,38 @@
+app-id: ch.proton.pass
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+
+command: pass-cli
+
+finish-args:
+  - --share=network
+
+modules:
+  - name: pass-cli
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 pass-cli-* /app/bin/.pass-cli-wrapped
+    sources:
+      # Check https://proton.me/download/pass-cli/versions.json
+      - type: file
+        url: https://proton.me/download/pass-cli/2.2.5/pass-cli-linux-x86_64
+        sha256: 3971bfdb5649bc59634c2195e35259ea3f4b7889bba5a4f6698b6af50b27cf7f
+        only-arches:
+          - x86_64
+      - type: file
+        url: https://proton.me/download/pass-cli/2.2.5/pass-cli-linux-aarch64
+        sha256: a8597eaf92631242a44c5b9b13b0fd0c0fc56b21a6c4f087b7d4c031651249b3
+        only-arches:
+          - aarch64
+  - name: pass-cli-flatpak-wrapper
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 pass-cli-flatpak-wrapper.sh /app/bin/pass-cli
+    sources:
+      - type: file
+        path: pass-cli-flatpak-wrapper.sh
+  - name: secret-tool
+    buildsystem: simple
+    build-commands:
+      - cp /usr/bin/secret-tool /app/bin/
